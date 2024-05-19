@@ -1,7 +1,7 @@
 import * as React from 'react';
 import './App.css';
 import { Grid, Typography } from '@mui/material';
-import { GameBoard } from './Components';
+import { GameBoard, GameResultDialog } from './Components';
 import { MoveType, type PlayerType } from './Models';
 import { ColorButton } from './Components/ColorButton';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
@@ -11,7 +11,9 @@ function App() {
   const [moves, setMoves] = React.useState<number[][]>([]); 
   const [board, setBoard] = React.useState<PlayerType[][]>([[]]); 
   const [currPlayer, setCurrPlayer] = React.useState<"A" | "B">("A");
+  const [resultsDialogOpen, setResultsDialogOpen] = React.useState(false);
   const [reset, triggerReset] = React.useState<boolean>(false);
+  const [gameResults, setGameResults] = React.useState<MoveType>();
 
   const onSelectedMove = (row: number, col: number) => {
     const newBoard = [...board];
@@ -32,6 +34,7 @@ function App() {
       newBoard.push(row);
     }
 
+    setResultsDialogOpen(false);
     setBoard(newBoard);
     setCurrPlayer("A");
     setMoves([]);
@@ -42,19 +45,29 @@ function App() {
     const winner = findWinner(moves);
     switch(winner) {
       case MoveType.playerA:
-        console.log("Player A won.");
+        setGameResults(MoveType.playerA);
         break;
       case MoveType.playerB:
-        console.log("Player B won.");
+        setGameResults(MoveType.playerB);
         break;
       case MoveType.draw:
-        console.log("Draw.");
+        setGameResults(MoveType.draw);
         break;
+    }
+
+    if(winner != MoveType.pending) {
+      setResultsDialogOpen(true);
     }
   }, [moves]);
 
+
   return (
     <Grid container spacing={1} direction="column" alignItems="center" justifyContent="center" minHeight="100vH">
+      <GameResultDialog
+        dialogOpen={resultsDialogOpen}
+        handleClose={() => triggerReset(prevVal => !prevVal)}
+        winner={gameResults}
+        />
       <Grid item container direction="column" marginTop={1} marginBottom={1} spacing={1} alignItems="center" justifyContent="center">
         <Typography variant='h2' fontWeight={700} color="#3C005A">Tic-Tac-Toe</Typography>
         <Typography fontSize={20} fontWeight={600} color="#3C005A">Player {currPlayer}'s move </Typography>
