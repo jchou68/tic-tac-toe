@@ -1,1 +1,6 @@
-export type MoveType =  "A" | "B" | null;
+export enum MoveType {
+    playerA = 'A',
+    playerB = 'B',
+    pending =  'Pending',
+    draw = 'Draw',
+}

@@ -1,9 +1,9 @@
 import { Grid } from "@mui/material";
 import { GameTile } from "../GameTile";
-import { type MoveType } from "../../Models";
+import { type PlayerType } from "../../Models";
 
 export interface GameBoardProps {
-    board: MoveType[][];
+    board: PlayerType[][];
     onSelectedMove: (row: number, col: number) => void;
 }
 
